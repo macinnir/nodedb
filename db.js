@@ -17,20 +17,17 @@
  * ;
  * </example>
  */
-var mysql = require('mysql'),
-    _ = require('lodash'),
-    q = require('q'),
-    colors = require("colors"),
-    globalConfig = require("./dbconfig")
+var mysql   = require('mysql'),
+    _       = require('lodash'),
+    q       = require('q'),
+    colors  = require("colors")
 ;
-
-// logger = require('../../Logger').create()
 
 var logger = console;
 
 q.longStackSupport = true;
 
-var DB = function() {
+var DB = function( dbconfig ) {
 
     // Default config values
     var defaults = {
@@ -43,18 +40,11 @@ var DB = function() {
         allowedFailedConnectionAttempts: 10
     };
 
-    if(typeof globalConfig === 'undefined') {
-
-        throw Exception("dbConfig must be defined for mysql.");
-        return false;
-
-    }
-
     /**
      * Member values
      */
     this.logger = (logger) ? logger : console;
-    this.config = _.defaults(globalConfig, defaults);
+    this.config = _.defaults( dbconfig, defaults );
 
     this.connection = mysql.createConnection(this.config);
     this.failedConnectionAttempts = 0;
@@ -64,10 +54,16 @@ var DB = function() {
 
 };
 
+// Static defaults 
+DB.defaults = {
+    defaultCharset: 'latin1',
+    engine: 'innoDb'
+};
+
 // Static initializer
 DB.init = function(dbConfig) {
 
-    console.log("Initializing DB");
+    console.log("Initializing DB".yellow);
 
     return new DB(dbConfig);
 
@@ -749,9 +745,4 @@ DB.prototype.createModelSQL = function(modelJSON) {
 
 };
 
-DB.defaults = {
-    defaultCharset: 'latin1',
-    engine: 'innoDb'
-};
-
-module.exports = new DB();
+module.exports = DB;

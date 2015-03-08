@@ -1,6 +1,6 @@
-var db = require('db'),
- 	q = require('q'), 
- 	lodash = require('lodash')
+var db 		= require('./db').db, 
+ 	q 		= require('q'), 
+ 	lodash 	= require('lodash')
 ; 
 
 // var fs = require('fs'), 
