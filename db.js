@@ -4,8 +4,8 @@
  * var db = new DB({
     host: 'localhost',
     user: 'root',
-    password: 'nskhpxy9!',
-    database: 'Enterprise',
+    password: '...',
+    database: 'MyDatabase',
     multipleStatements: true,
     connectionRetryTimeout: 5000,
     allowedFailedConnectionAttempts: 10
@@ -20,14 +20,12 @@
 var mysql   = require('mysql'),
     _       = require('lodash'),
     q       = require('q'),
-    colors  = require("colors")
+    colors  = require('colors')
 ;
-
-var logger = console;
 
 q.longStackSupport = true;
 
-var DB = function( dbconfig ) {
+var DB = function( dbconfig, logger ) {
 
     // Default config values
     var defaults = {
@@ -45,7 +43,6 @@ var DB = function( dbconfig ) {
      */
     this.logger = (logger) ? logger : console;
     this.config = _.defaults( dbconfig, defaults );
-
     this.connection = mysql.createConnection(this.config);
     this.failedConnectionAttempts = 0;
     this._connection = false;
@@ -63,14 +60,16 @@ DB.defaults = {
 // Static initializer
 DB.init = function(dbConfig) {
 
-    console.log("Initializing DB".yellow);
+    this.logger.log("Initializing DB".yellow);
 
     return new DB(dbConfig);
 
 };
 
 DB.prototype.isConnected = function() {
+
     return this.connection && this.connection._socket && this.connection._socket.readable;
+
 };
 
 DB.prototype.connect = function() {
@@ -180,7 +179,7 @@ DB.prototype.connect = function() {
 
 DB.prototype.printLog = function() {
 
-    console.log('printing log');
+    this.logger.log('printing log');
 
     var i = 0, n = this.queryLog.length;
     this.logger.log('Query Log'.red.underline);
@@ -251,14 +250,14 @@ DB.prototype.query = function(queryStmt) {
 
             function(err) {
 
-                console.log('there was an error.');
-                console.log(err);
+                this.logger.log('there was an error.');
+                this.logger.log(err);
                 deferredQuery.reject(err);
 
             },
             // progress
             function(progress) {
-                console.log('Progress', progress);
+                this.logger.log('Progress', progress);
             }
         )
     ;

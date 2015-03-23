@@ -1,11 +1,21 @@
 {
   "name": "db",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A simple nodejs mysql database module",
   "main": "db.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "macinnir",
+  "repository": {
+	"type": "git", 
+	"url": "http://github.com/macinnir/nodedb.git"
+  }, 
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.0.3",
+    "lodash": "^3.5.0",
+    "mysql": "^2.5.5",
+    "q": "^1.2.0"
+  }
 }
